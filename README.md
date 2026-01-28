@@ -1,7 +1,7 @@
 # 🛰️ The Gossiping Satellite - ActInSpace 2026
 
 > **Challenge:** Space 4.0 & Data Compression
-> **Team:** [Tên Team Của Bạn]
+> **Team:** SpaceUS
 
 ## 🚀 The Problem
 Satellite imagery is heavy (GBs). Transmitting raw data takes too much bandwidth, time, and energy.
