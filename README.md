@@ -18,7 +18,6 @@ It processes images on-board using **YOLOv8** and generates a text-based intelli
 
 ## 📸 Demo
 ![Architecture](./demo-architecture.png)
-*(Bạn có thể chụp ảnh màn hình giao diện web và để vào đây sau)*
 
 ## 📦 Installation
 ### 1. Backend
