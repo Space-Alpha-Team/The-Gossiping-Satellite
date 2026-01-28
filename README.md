@@ -19,7 +19,7 @@ It processes images on-board using **YOLOv8** and generates a text-based intelli
 ## 📸 Demo
 ![Architecture](./demo-architecture.png)
 
-## 📦 Installation
+## 📦 Running
 ### 1. Backend
 ```bash
 cd backend
