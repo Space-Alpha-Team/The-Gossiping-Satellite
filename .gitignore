@@ -1,0 +1,77 @@
+# ===========================
+# 1. HỆ ĐIỀU HÀNH & IDE (OS & Editors)
+# ===========================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Mac OS
+.DS_Store
+
+# VS Code / JetBrains
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===========================
+# 2. BẢO MẬT (Security) - QUAN TRỌNG NHẤT
+# ===========================
+# Chặn tất cả file chứa API Key
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+backend/.env
+frontend/.env
+
+# ===========================
+# 3. PYTHON (Backend)
+# ===========================
+# Byte-compiled / Optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Môi trường ảo (Virtual Environments)
+.venv/
+venv/
+env/
+ENV/
+backend/.venv/
+
+# AI Models (File .pt thường nặng, nên để code tự tải về thay vì up lên git)
+*.pt
+*.onnx
+# Nếu bạn muốn up file model yolov8n.pt (vì nó nhẹ), hãy xóa dòng *.pt ở trên
+
+# Dữ liệu ảnh test (Không nên up ảnh rác lên repo)
+backend/satellite_images/*
+# Giữ lại file .gitkeep này để Git vẫn tạo thư mục (nếu bạn tạo file này)
+!backend/satellite_images/.gitkeep
+
+# Logs
+*.log
+
+# ===========================
+# 4. NODEJS / REACT (Frontend)
+# ===========================
+# Thư viện (Rất nặng, người khác sẽ tự chạy 'npm install')
+node_modules/
+frontend/node_modules/
+
+# Kết quả Build (Sản phẩm đầu ra)
+dist/
+build/
+frontend/dist/
+
+# Logs lỗi của NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Các file tạm hệ thống
+.eslintcache
