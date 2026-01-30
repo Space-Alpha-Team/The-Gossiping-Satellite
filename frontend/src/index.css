@@ -21,3 +21,20 @@ body {
   box-shadow: 0 0 10px #00FF41;
   animation: scan 2s linear infinite;
 }
+
+@keyframes scan {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+.animate-scan {
+  animation: scan 4s linear infinite;
+}
+
+/* Ẩn thanh cuộn cho log nhìn gọn hơn */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
