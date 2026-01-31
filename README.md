@@ -1,4 +1,4 @@
-# �️ PROJECT A.E.G.I.S. - Autonomous Edge & Ground Intelligence System
+# 🚀 PROJECT A.E.G.I.S. - Autonomous Edge & Ground Intelligence System
 
 > **Mission:** Predicting Fire Before It Spreads
 > **Tagline:** The Shield from Above, The Mind on the Ground
