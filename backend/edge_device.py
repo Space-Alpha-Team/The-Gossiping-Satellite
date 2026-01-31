@@ -1,5 +1,6 @@
-# backend/edge_device.py
-# CHẠY TRÊN PORT 8000 (Gateway giao tiếp với Frontend)
+# PROJECT A.E.G.I.S. - Autonomous Edge & Ground Intelligence System
+# Ground Command Gateway (PORT 8000)
+# Purpose: Fusion of satellite predictions with ground data, real-time streaming to command center
 
 import asyncio
 import requests
@@ -90,7 +91,9 @@ async def satellite_orbit_simulation(websocket: WebSocket):
                         
                         # --- DỮ LIỆU MỚI: HEATMAP ---
                         "heatmap": data.get("heatmap"),   # Ma trận dự đoán hướng lan
-                        "grid_size": data.get("grid_size") # Kích thước lưới
+                        "grid_size": data.get("grid_size"), # Kích thước lưới
+                        "fire_origin": data.get("fire_origin"), # Vị trí nguồn lửa
+                        "safe_boundary": data.get("safe_boundary") # Ranh giới vùng an toàn
                     }
                     
                     # Gửi qua WebSocket

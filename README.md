@@ -1,20 +1,28 @@
-# 🛰️ The Gossiping Satellite - ActInSpace 2026
+# �️ PROJECT A.E.G.I.S. - Autonomous Edge & Ground Intelligence System
 
-> **Challenge:** Space 4.0 & Data Compression
+> **Mission:** Predicting Fire Before It Spreads
+> **Tagline:** The Shield from Above, The Mind on the Ground
+> **Challenge:** Space 4.0 & Wildfire Detection/Prediction
 > **Team:** SpaceUS
 
-## 🚀 The Problem
-Satellite imagery is heavy (GBs). Transmitting raw data takes too much bandwidth, time, and energy.
+## 🎯 The Vision
+In Greek mythology, Aegis was the ultimate shield of Zeus and Athena. PROJECT A.E.G.I.S. is the technological shield protecting forests from wildfire.
 
-## 💡 The Solution: Edge AI
-Instead of sending images, our satellite **thinks** and **speaks**.
-It processes images on-board using **YOLOv8** and generates a text-based intelligence report using **Llama-3 (Groq)**.
+## 🚀 The Innovation
+Traditional wildfire detection relies on **either** satellites **or** ground stations. We combine **both**.
 
-**Result:** 99.99% Bandwidth Savings.
+- **A (Autonomous):** Satellite autonomously detects fire using advanced color algorithms (NBR Mask)
+- **E (Edge):** Processing happens at the edge (on-board) with zero-latency compression via VAE Encoder
+- **G (Ground):** Ground stations provide critical context (wind, slope, humidity) that satellites cannot see
+- **I (Intelligence):** Fusion algorithm creates predictive intelligence (Fire Heatmap + Spread Simulation)
+- **S (System):** Continuous handshake between satellite and ground for real-time prediction updates
+
+**Result:** Real-time wildfire prediction with 99.99% bandwidth savings.
 
 ## 🛠️ Tech Stack
-- **On-board AI (Backend):** Python, FastAPI, YOLOv8, Groq API (Llama-3), WebSockets.
-- **Ground Station (Frontend):** React, TailwindCSS, Vite.
+- **On-board AI (Backend):** Python, FastAPI, YOLOv8, OpenCV, Groq API (Llama-3), WebSockets
+- **Ground Station (Frontend):** React, TailwindCSS, Vite, Canvas API for real-time heatmap visualization
+- **Core Algorithm:** Red-Excess & Green-Blue-Excess for fire detection + Cellular Automata for fire spread simulation
 
 ## 📸 Demo
 ![Architecture](./demo-architecture.png)
