@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Wifi, Download, AlertTriangle, Wind, ShieldCheck, Zap, Eye, EyeOff } from 'lucide-react';
+import { Wifi, Download, AlertTriangle, Wind, ShieldCheck, Zap, Eye, EyeOff, ChevronLeft, ChevronRight, Grid3X3 } from 'lucide-react';
 
 function App() {
   const [logs, setLogs] = useState([]);
@@ -11,6 +11,8 @@ function App() {
   const [fireOrigin, setFireOrigin] = useState(null);
   const [safeBoundary, setSafeBoundary] = useState(null);
   const [showSatelliteImage, setShowSatelliteImage] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showSafeBoundary, setShowSafeBoundary] = useState(true);
 
   // Canvas reference cho heatmap rendering
   const canvasRef = useRef(null);
@@ -116,7 +118,7 @@ function App() {
     }
 
     // Vẽ ranh giới vùng an toàn
-    if (safeBoundary && safeBoundary.length > 0) {
+    if (showSafeBoundary && safeBoundary && safeBoundary.length > 0) {
       console.log('Drawing safe boundary with', safeBoundary.length, 'points');
       
       // Vẽ các điểm trên ranh giới
@@ -130,7 +132,7 @@ function App() {
         
         // Vẽ outline trắng để nổi bật
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 0.25;
         ctx.strokeRect(x - cellSize * 0.15, y - cellSize * 0.15, cellSize * 0.3, cellSize * 0.3);
       });
     }
@@ -201,106 +203,92 @@ function App() {
   }, [heatmap, fireOrigin, safeBoundary]);
 
   return (
-    <div className="min-h-screen bg-[#050505] text-green-500 font-mono p-6 overflow-hidden selection:bg-green-900 selection:text-white">
-      {/* HEADER */}
-      <header className="flex justify-between items-center border-b border-green-900/50 pb-4 mb-6">
-        <div>
-          <h1 className="text-4xl font-black tracking-[0.2em] text-white flex items-center gap-3">
-            <Zap size={32} className="text-yellow-500"/> PROJECT A.E.G.I.S. <span className="text-green-600 text-sm tracking-normal font-normal opacity-70">GROUND COMMAND</span>
-          </h1>
-          <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Autonomous Edge & Ground Intelligence System // Predicting Fire Before It Spreads</p>
-        </div>
-        <div className="flex gap-4">
-          <div className="flex items-center gap-2 text-yellow-500 border border-yellow-900/30 px-3 py-1 rounded bg-yellow-900/10">
-            <Wind size={18} className="animate-pulse" />
-            <span className="text-xs font-bold">WIND: NE 15km/h</span>
-          </div>
-          <div className={`flex items-center gap-2 px-3 py-1 rounded transition-colors duration-500 ${isConnected ? 'bg-green-900/20 text-green-400 border border-green-900/50' : 'bg-red-900/20 text-red-400 border border-red-900/50'}`}>
-            <Wifi size={18} />
-            <span className="text-xs font-bold">{isConnected ? "UPLINK STABLE" : "OFFLINE"}</span>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#050505] text-green-500 font-mono overflow-hidden selection:bg-green-900 selection:text-white flex flex-col h-screen w-screen">
+      {/* NO HEADER - Full screen map */}
+      <main className="flex flex-1 gap-0 overflow-hidden h-full w-full">
+        {/* LEFT SIDEBAR - Collapsible */}
+        <div className={`bg-black/80 border-r border-green-900/30 backdrop-blur-sm flex flex-col transition-all duration-300 ${sidebarOpen ? 'w-96' : 'w-0'} overflow-hidden`}>
+          {/* Sidebar Content */}
+          <div className="flex flex-col gap-3 p-4 h-full overflow-y-auto">
+            {/* ALERT BOX */}
+            <div className="bg-gray-900/50 border border-red-500/30 p-4 rounded relative overflow-hidden group hover:border-red-500/60 transition-colors flex-shrink-0">
+              <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity"><AlertTriangle size={80} className="text-red-500"/></div>
+              
+              <h2 className="text-lg text-white font-bold mb-2 flex items-center gap-2 relative z-10">
+                <ShieldCheck size={16} className="text-green-400"/> TACTICAL ADVISOR
+              </h2>
+              
+              {currentAlert ? (
+                <div className="relative z-10 space-y-3">
+                  <div className="text-xl text-red-500 font-black animate-pulse">
+                    DETECTED
+                  </div>
+                  
+                  <div className="text-xs text-green-300 border-l-2 border-green-500/50 pl-2 italic opacity-90 leading-relaxed">
+                    "{currentAlert.text}"
+                  </div>
 
-      <main className="grid grid-cols-12 gap-6 h-[80vh]">
-        
-        {/* LEFT COLUMN: CONTROL & LOGS */}
-        <div className="col-span-4 flex flex-col gap-4 h-full max-h-[80vh]">
-          
-          {/* ALERT & ACTION BOX */}
-          <div className="bg-gray-900/50 border border-red-500/30 p-5 rounded relative overflow-hidden group hover:border-red-500/60 transition-colors">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><AlertTriangle size={100} className="text-red-500"/></div>
-            
-            <h2 className="text-xl text-white font-bold mb-3 flex items-center gap-2">
-              <ShieldCheck size={20} className="text-green-400"/> TACTICAL ADVISOR
-            </h2>
-            
-            {currentAlert ? (
-              <div className="relative z-10 space-y-4">
-                <div className="text-2xl text-red-500 font-black animate-pulse tracking-wide">
-                  DETECTED
-                </div>
-                
-                {/* SLM Report Text */}
-                <div className="text-sm text-green-300 border-l-2 border-green-500/50 pl-3 italic opacity-90 leading-relaxed">
-                  "{currentAlert.text}"
-                </div>
+                  <div className="grid grid-cols-2 gap-2 text-[9px] text-gray-400 bg-black/40 p-2 rounded">
+                      <div>OBJ: {Object.keys(currentAlert.detected).join(", ") || "Unknown"}</div>
+                      <div>SIZE: {currentAlert.bandwidth_usage}B</div>
+                  </div>
 
-                {/* Data Stats */}
-                <div className="grid grid-cols-2 gap-2 text-[10px] text-gray-400 bg-black/40 p-2 rounded">
-                    <div>OBJ: {Object.keys(currentAlert.detected).join(", ") || "Unknown"}</div>
-                    <div>SIZE: {currentAlert.bandwidth_usage} Bytes</div>
+                  <button 
+                    onClick={handleFetchImage} 
+                    className={`w-full py-2 rounded font-bold text-xs tracking-wider flex justify-center items-center gap-2 transition-all duration-300
+                      ${satelliteImage 
+                        ? 'bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700' 
+                        : 'bg-red-600 text-white hover:bg-red-500'
+                      }`}
+                  >
+                    <Download size={12}/> {satelliteImage ? "REFRESH" : "DOWNLOAD"}
+                  </button>
                 </div>
+              ) : (
+                <div className="text-center py-6 text-gray-600 text-xs animate-pulse">Scanning...</div>
+              )}
+            </div>
 
-                {/* Download Button */}
-                <button 
-                  onClick={handleFetchImage} 
-                  className={`w-full py-3 rounded font-bold text-xs tracking-wider flex justify-center items-center gap-2 transition-all duration-300 shadow-[0_0_20px_rgba(0,0,0,0.5)]
-                    ${satelliteImage 
-                      ? 'bg-gray-800 text-gray-400 border border-gray-700 hover:bg-gray-700' 
-                      : 'bg-red-600 text-white hover:bg-red-500 shadow-[0_0_10px_rgba(220,38,38,0.4)]'
-                    }`}
-                >
-                  <Download size={16}/> {satelliteImage ? "REFRESH VISUAL" : "DOWNLOAD VISUAL EVIDENCE"}
-                </button>
+            {/* TERMINAL LOGS */}
+            <div className="flex-1 bg-black/50 border border-green-900/30 p-3 rounded overflow-hidden flex flex-col font-mono text-[9px] shadow-inner min-h-0">
+              <div className="absolute px-2 py-1 text-green-800 font-bold opacity-50 text-[8px]">TERMINAL</div>
+              <div className="flex-1 overflow-y-auto space-y-0.5 scrollbar-hide pr-2 mt-4">
+                {logs.map((log, i) => (
+                  <div key={i} className="hover:bg-green-900/10 px-1 border-l-2 border-transparent hover:border-green-600 transition-all text-gray-300 whitespace-nowrap overflow-hidden text-ellipsis">
+                    <span className="text-green-600 font-bold">{log.split(']')[0]}]</span> <span className="text-gray-400">{log.split(']')[1]}</span>
+                  </div>
+                ))}
+                <div ref={logEndRef} />
               </div>
-            ) : (
-              <div className="text-center py-10 text-gray-600 text-sm animate-pulse">Scanning Orbit Sector...</div>
-            )}
-          </div>
-
-          {/* TERMINAL LOGS */}
-          <div className="flex-1 bg-black border border-green-900/30 p-3 rounded overflow-hidden flex flex-col font-mono text-[10px] shadow-inner relative min-h-0">
-            <div className="absolute top-0 right-0 px-2 py-1 text-green-800 font-bold opacity-50">TERM_V1</div>
-            <div className="flex-1 overflow-y-auto space-y-1 scrollbar-hide pr-2">
-              {logs.map((log, i) => (
-                <div key={i} className="hover:bg-green-900/10 px-1 border-l-2 border-transparent hover:border-green-600 transition-all text-gray-300">
-                  <span className="text-green-600 font-bold">{log.split(']')[0]}]</span> {log.split(']')[1]}
-                </div>
-              ))}
-              <div ref={logEndRef} />
             </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: TACTICAL MAP (DIGITAL TWIN) */}
-        <div className="col-span-8 bg-black border border-green-800/50 rounded-lg relative overflow-hidden flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
+        {/* TOGGLE BUTTON */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="w-8 h-8 bg-black/80 border-r border-green-900/30 hover:bg-green-900/30 transition-colors flex items-center justify-center text-green-400 flex-shrink-0"
+          title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
+        >
+          {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+        </button>
+
+        {/* MAIN MAP AREA - Full width */}
+        <div className="flex-1 bg-black border border-green-800/50 rounded-none relative overflow-hidden flex items-center justify-center bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] shadow-[inset_0_0_50px_rgba(0,0,0,0.8)]">
           
           {/* LỚP 1: ẢNH VỆ TINH GỐC (NỀN) */}
           <div className={`absolute inset-0 flex items-center justify-center z-0 ${showSatelliteImage ? 'opacity-70' : 'opacity-0'} transition-opacity duration-300`}>
              {satelliteImage ? (
-               // QUAN TRỌNG: w-full h-full để ép ảnh khớp với grid 40x40
                <img src={satelliteImage} className="w-full h-full object-fill" alt="Satellite Feed" />
              ) : (
                <div className="flex flex-col items-center opacity-20 space-y-2">
                  <div className="text-6xl font-black text-green-900 tracking-tighter">NO SIGNAL</div>
-                 <div className="text-xs text-green-800 tracking-[0.3em]">WAITING FOR VISUAL DATA PACKET...</div>
+                 <div className="text-xs text-green-800 tracking-[0.3em]">WAITING FOR VISUAL DATA...</div>
                </div>
              )}
           </div>
 
-          {/* LỚP 2: HEATMAP CANVAS (DỮ LIỆU SỐ) */}
-          {/* mix-blend-plus-lighter giúp màu lửa rực rỡ hơn trên nền tối */}
+          {/* LỚP 2: HEATMAP CANVAS */}
           <div className="relative w-full h-full z-10 mix-blend-plus-lighter">
              {heatmap && (
                <canvas
@@ -311,33 +299,39 @@ function App() {
                />
              )}
              
-             {/* HUD Overlay (Giao diện kính phi công) */}
-             <div className="absolute top-4 left-4 flex gap-3">
+             {/* TOP-LEFT CONTROLS */}
+             <div className="absolute top-4 left-4 flex gap-2">
                 <div className="bg-black/80 px-3 py-2 text-xs text-orange-400 border-l-2 border-orange-500 backdrop-blur-md shadow-lg">
-                  <div className="font-bold text-white mb-1">SIMULATION_MODE</div>
-                  <div className="text-[10px] opacity-80">ALGO: CELLULAR AUTOMATA</div>
-                  <div className="text-[10px] opacity-80">PREDICTION: T+30 MINS</div>
+                  <div className="font-bold text-white mb-1">SIMULATION</div>
+                  <div className="text-[9px] opacity-80">CELLULAR AUTOMATA</div>
                 </div>
                 
-                {/* Toggle Satellite Image Button */}
                 <button
                   onClick={() => setShowSatelliteImage(!showSatelliteImage)}
                   className="bg-black/80 px-3 py-2 text-xs border border-green-600/50 rounded backdrop-blur-md shadow-lg hover:bg-black/60 transition-colors flex items-center gap-2 text-green-400"
-                  title={showSatelliteImage ? 'Hide satellite image' : 'Show satellite image'}
                 >
                   {showSatelliteImage ? <Eye size={14} /> : <EyeOff size={14} />}
                   <span className="text-[10px]">{showSatelliteImage ? 'HIDE' : 'SHOW'}</span>
                 </button>
+
+                <button
+                  onClick={() => setShowSafeBoundary(!showSafeBoundary)}
+                  className="bg-black/80 px-3 py-2 text-xs border border-green-600/50 rounded backdrop-blur-md shadow-lg hover:bg-black/60 transition-colors flex items-center gap-2 text-green-400"
+                  title={showSafeBoundary ? "Hide safe zone boundaries" : "Show safe zone boundaries"}
+                >
+                  {showSafeBoundary ? <Grid3X3 size={14} /> : <Grid3X3 size={14} className="opacity-50" />}
+                  <span className="text-[10px]">{showSafeBoundary ? 'ZONES' : 'ZONES'}</span>
+                </button>
              </div>
              
-             {/* Legend */}
-             <div className="absolute bottom-4 right-4 bg-black/90 p-3 text-[10px] border border-gray-800 rounded backdrop-blur-md shadow-lg">
-               <div className="flex items-center gap-2 mb-1"><div className="w-2 h-2 bg-red-600 shadow-[0_0_5px_red] rounded-full"></div> CURRENT FIRE FRONT</div>
-               <div className="flex items-center gap-2"><div className="w-2 h-2 bg-orange-500/50 rounded-full"></div> PREDICTED SPREAD ZONE</div>
+             {/* LEGEND - BOTTOM RIGHT */}
+             <div className="absolute bottom-4 right-4 bg-black/90 p-3 text-[9px] border border-gray-800 rounded backdrop-blur-md shadow-lg">
+               <div className="flex items-center gap-2 mb-1"><div className="w-2 h-2 bg-red-600 shadow-[0_0_5px_red] rounded-full"></div> FIRE FRONT</div>
+               <div className="flex items-center gap-2"><div className="w-2 h-2 bg-orange-500/50 rounded-full"></div> SPREAD ZONE</div>
              </div>
           </div>
 
-          {/* Scan Line Effect (Hiệu ứng quét radar) */}
+          {/* SCAN LINE EFFECT */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-green-500/5 to-transparent h-[10%] w-full animate-scan pointer-events-none z-30"></div>
 
         </div>
